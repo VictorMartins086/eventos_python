@@ -1,0 +1,64 @@
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+class Evento:
+    def __init__(self, id_evento, nome, lotacao_maxima):
+        self.id = id_evento
+        self.nome = nome
+        self.lotacao_maxima = lotacao_maxima
+        self.inscritos = 0
+
+    def tem_vaga(self):
+        return self.inscritos < self.lotacao_maxima
+
+    def realizar_inscricao(self):
+       
+        if not self.tem_vaga():
+            raise ValueError("Lotação máxima atingida. Evento cheio.")
+        self.inscritos += 1
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "lotacao_maxima": self.lotacao_maxima,
+            "inscritos": self.inscritos,
+            "vagas_disponiveis": self.lotacao_maxima - self.inscritos
+        }
+
+
+    1: Evento(1, "Bootcamp de Python", 1),
+    2: Evento(2, "Workshop de Inteligência Artificial", 50),
+    3: Evento(3, "Congresso de Tecnologia", 200)
+}
+
+
+@app.route('/eventos', methods=['GET'])
+def listar_eventos():
+    lista_eventos = [evento.to_dict() for evento in banco_de_eventos.values()]
+    return jsonify(lista_eventos), 200
+
+
+@app.route('/eventos/<int:evento_id>/inscrever', methods=['POST'])
+def inscrever_em_evento(evento_id):
+   
+    evento = banco_de_eventos.get(evento_id)
+    if not evento:
+        return jsonify({"erro": "Evento não encontrado."}), 404
+
+    try:
+        
+        evento.realizar_inscricao()
+        return jsonify({
+            "mensagem": "Inscrição realizada com sucesso!",
+            "evento": evento.to_dict()
+        }), 200
+        
+    except ValueError as erro:
+       
+        return jsonify({"erro": str(erro)}), 400
+
+if __name__ == '__main__':
+    
+    app.run(debug=True)
