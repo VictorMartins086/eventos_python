@@ -240,18 +240,21 @@ def menu_funcionario(login_usuario):
 # PROGRAMA PRINCIPAL
 # =========================
 
-print("======= LOGIN =======")
+# Luan corrigiu: sem esse guard, o bloco de login executava automaticamente ao importar o módulo em app.py
+if __name__ == "__main__":
 
-login = input("Login: ")
-senha = input("Senha: ")
+    print("======= LOGIN =======")
 
-tipo = autenticar(login, senha)
+    login = input("Login: ")
+    senha = input("Senha: ")
 
-if tipo == "admin":
-    menu_admin()
+    tipo = autenticar(login, senha)
 
-elif tipo == "funcionario":
-    menu_funcionario(login)
+    if tipo == "admin":
+        menu_admin()
 
-else:
-    print("\nAcesso negado!")
+    elif tipo == "funcionario":
+        menu_funcionario(login)
+
+    else:
+        print("\nAcesso negado!")
